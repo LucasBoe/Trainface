@@ -29,13 +29,18 @@ public class LineHandler : Singleton<LineHandler>
         return false;
     }
 
-    public bool DoesLineSegmentIntersectsWithAnyLine(LineSegment lineSegment) {
+    public bool DoesLineSegmentIntersectsWithAnyLine(LineSegment newSegment) {
         foreach (Line line in lines)
         {
             foreach (LineSegment segment in line.GetLineSegments())
             {
-                if (lineSegment.DoesIntersectWith(segment) && (lineSegment.first != segment.second))
+                if (newSegment.DoesIntersectWith(segment) && newSegment.first != segment.second
+                    && (newSegment.second != segment.first)
+                    && (newSegment.first != segment.first)
+                    && (newSegment.second != segment.second))
+                {
                     return true;
+                }
             }
         }
 

@@ -38,7 +38,7 @@ public class CityConnectionHandler : Singleton<CityConnectionHandler>
         {
             City[] cities = line.GetCities();
             LineSegment segment = new LineSegment(cities[cities.Length - 1].transform.position.To2D(), Game.PlayerInteraction.hitPosition.To2D());
-            Color c = Game.LineHandler.DoesLineSegmentIntersectsWithAnyLine(segment) ? Color.red : Color.green;
+            Color c = Game.LineHandler.DoesLineSegmentIntersectsWithAnyLine(segment) ? Color.red : line.Color;
 
             lineRenderer.startColor = c;
             lineRenderer.endColor = c;
