@@ -38,6 +38,12 @@ public class Game : MonoBehaviour
         }
     }
 
+    public static GoodsDataHandler GoodsHandler {
+        get {
+            return GoodsDataHandler.GetInstance();
+        }
+    }
+
     public static Game GetInstance () {
         return Instance;
     }

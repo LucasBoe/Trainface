@@ -4,16 +4,43 @@ using UnityEngine;
 
 public class City : MonoBehaviour, IClickable
 {
-    public Color Color;
-
-
-
-
-
-    public string GetName()
-    {
-        return name;
+    [SerializeField] MeshRenderer meshRenderer, groundBlend;
+    [SerializeField] Goods goods;
+    public Goods Goods {
+        get {
+            return goods;
+        }
     }
+    [SerializeField] bool isSource;
+
+    private void Start()
+    {
+        transform.rotation = Quaternion.Euler(0, Random.Range(0,360), 0);
+
+        if (meshRenderer != null && !goods.IsNull)
+        {
+            Debug.Log("enable visuals for " + name);
+            meshRenderer.enabled = true;
+            meshRenderer.material = new Material(meshRenderer.material);
+            meshRenderer.material.color = goods.Data.color;
+
+            if (!isSource)
+                groundBlend.enabled = true;
+        }
+    }
+
+    public virtual bool Produces (string goodsName = "") {
+        return isSource && (goodsName == "" || goodsName == goods.name);
+    }
+
+    public virtual bool Needs(string goodsName = "")
+    {
+        return !isSource && (goodsName == "" || goodsName == goods.name);
+    }
+
+    /// <summary>
+    /// Interaction
+    /// </summary>
 
     public void StartDrag()
     {
@@ -42,13 +69,8 @@ public class City : MonoBehaviour, IClickable
         transform.localScale = Vector3.one;
     }
 
-    private void Start()
+    public string GetName()
     {
-        MeshRenderer meshRenderer = GetComponent<MeshRenderer>();
-        if (meshRenderer != null)
-        {
-            meshRenderer.material = new Material(meshRenderer.material);
-            meshRenderer.material.color = Color;
-        }
+        return name;
     }
 }

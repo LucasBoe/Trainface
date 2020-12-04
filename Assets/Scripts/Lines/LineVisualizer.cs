@@ -15,10 +15,11 @@ public class LineVisualizer : MonoBehaviour
     public void Display(Line line) {
         this.line = line;
 
-        lineRenderer.startColor = line.Color;
-        lineRenderer.endColor = line.Color;
-        dotRenderer.material = new Material(dotRenderer.material);
-        dotRenderer.material.color = line.Color;
+        Material mat = new Material(dotRenderer.material);
+        mat.color = line.Color;
+
+        dotRenderer.material = mat;
+        lineRenderer.material = mat;
 
         line.OnChangeLength += OnUpdateLength;
     }
@@ -73,7 +74,7 @@ public class LineVisualizer : MonoBehaviour
 
         lineRenderer.positionCount = cities.Length;
         for (int i = 0; i < cities.Length; i++)
-            lineRenderer.SetPosition(i, cities[i].transform.position);
+            lineRenderer.SetPosition(i, cities[i].transform.position + Vector3.up * 0.1f);
     }
 
     private void OnDestroy()

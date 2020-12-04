@@ -10,18 +10,23 @@ public class CityConnectionHandler : Singleton<CityConnectionHandler>
 
     internal void TryStartConnectionAt(City city)
     {
-        Debug.Log("start at city" + city.name);
+        Debug.Log("try start at city" + city.name);
 
+        //pick up existing line
         line = Game.LineHandler.PickUpLine(city);
-        if (line == null) {
+
+        //create new if city is producer
+        if (line == null && city.Produces())
             line = Game.LineHandler.CreateNewLine(city);
-        }
     }
 
     internal void TryEndConnectionAt(City city)
     {
+        if (line == null)
+            return;
+
         LineSegment lineSegment = new LineSegment(line.GetCities()[line.GetCities().Length - 1].transform.position.To2D(), Game.PlayerInteraction.hitPosition.To2D());
-        if (line != null && !Game.LineHandler.DoesLineSegmentIntersectsWithAnyLine(lineSegment))
+        if (!Game.LineHandler.DoesLineSegmentIntersectsWithAnyLine(lineSegment))
             line.AddCity(city);
 
         line = null;

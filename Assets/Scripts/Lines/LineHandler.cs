@@ -66,7 +66,7 @@ public class Line
 
     public Line (City startingCity) {
         cities.Add(startingCity);
-        color = startingCity.Color;
+        color = startingCity.Goods.Data.color;
     }
 
     public void AddCity (City city) {
