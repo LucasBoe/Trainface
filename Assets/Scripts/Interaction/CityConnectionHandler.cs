@@ -20,7 +20,8 @@ public class CityConnectionHandler : Singleton<CityConnectionHandler>
 
     internal void TryEndConnectionAt(City city)
     {
-        if (line != null && !Game.LineHandler.CityIsPartOfLine(city))
+        LineSegment lineSegment = new LineSegment(line.GetCities()[line.GetCities().Length - 1].transform.position.To2D(), Game.PlayerInteraction.hitPosition.To2D());
+        if (line != null && !Game.LineHandler.DoesLineSegmentIntersectsWithAnyLine(lineSegment))
             line.AddCity(city);
 
         line = null;
@@ -30,19 +31,16 @@ public class CityConnectionHandler : Singleton<CityConnectionHandler>
     {
         if (line != null)
         {
-            lineRenderer.startColor = line.Color;
-            lineRenderer.endColor = line.Color;
-
             City[] cities = line.GetCities();
+            LineSegment segment = new LineSegment(cities[cities.Length - 1].transform.position.To2D(), Game.PlayerInteraction.hitPosition.To2D());
+            Color c = Game.LineHandler.DoesLineSegmentIntersectsWithAnyLine(segment) ? Color.red : Color.green;
 
-            lineRenderer.positionCount = cities.Length + 1;
-            for (int i = 0; i <= cities.Length; i++)
-            {
-                if (i == cities.Length)
-                    lineRenderer.SetPosition(i, Game.PlayerInteraction.hitPosition);
-                else
-                    lineRenderer.SetPosition(i, cities[i].transform.position);
-            }
+            lineRenderer.startColor = c;
+            lineRenderer.endColor = c;
+
+            lineRenderer.positionCount = 2;
+            lineRenderer.SetPosition(0, segment.first.To3D());
+            lineRenderer.SetPosition(1, segment.second.To3D());
 
         } else {
             lineRenderer.positionCount = 0;

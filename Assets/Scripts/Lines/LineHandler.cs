@@ -29,6 +29,19 @@ public class LineHandler : Singleton<LineHandler>
         return false;
     }
 
+    public bool DoesLineSegmentIntersectsWithAnyLine(LineSegment lineSegment) {
+        foreach (Line line in lines)
+        {
+            foreach (LineSegment segment in line.GetLineSegments())
+            {
+                if (lineSegment.DoesIntersectWith(segment) && (lineSegment.first != segment.second))
+                    return true;
+            }
+        }
+
+        return false;
+    }
+
     internal Line CreateNewLine(City city)
     {
         Line line = new Line(city);
@@ -41,6 +54,8 @@ public class LineHandler : Singleton<LineHandler>
 public class Line
 {
     List<City> cities = new List<City>();
+    float length;
+    public System.Action<float> OnChangeLength;
 
     private Color color;
     public Color Color {
@@ -56,6 +71,23 @@ public class Line
 
     public void AddCity (City city) {
         cities.Add(city);
+        UpdateLength();
+    }
+
+    private void UpdateLength()
+    {
+        length = 0;
+
+        City before = null;
+
+        foreach (var current in cities)
+        {
+            if (before != null)
+                length += Vector3.Distance(before.transform.position, current.transform.position);
+
+            before = current;
+        }
+        OnChangeLength?.Invoke(length);
     }
 
     public bool CityIsLast(City city)
@@ -73,5 +105,20 @@ public class Line
 
     public City[] GetCities () {
         return cities.ToArray();
+    }
+
+    public LineSegment [] GetLineSegments () {
+        List<LineSegment> segments = new List<LineSegment>();
+
+        City before = null;
+        foreach (City current in cities)
+        {
+            if (before != null)
+                segments.Add(new LineSegment(before.transform.position.To2D(), current.transform.position.To2D()));
+
+            before = current;
+        }
+
+        return segments.ToArray();
     }
 }
