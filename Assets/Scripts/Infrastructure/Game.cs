@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -58,5 +59,20 @@ public class Game : MonoBehaviour
 
     public static Game GetInstance () {
         return Instance;
+    }
+
+    private static GameSettings gameSettings;
+    public static GameSettings Settings {
+        get {
+            if (gameSettings == null)
+                gameSettings = LoadGameSettings();
+
+            return gameSettings;
+        }
+    }
+
+    private static GameSettings LoadGameSettings()
+    {
+        return Resources.LoadAll<GameSettings>("Settings")[0];
     }
 }

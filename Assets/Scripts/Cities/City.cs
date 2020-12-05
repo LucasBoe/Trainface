@@ -7,27 +7,46 @@ public class City : MonoBehaviour, IClickable
     [SerializeField] MeshRenderer meshRenderer, groundBlend;
     [SerializeField] Goods goods;
     public Goods Goods {
-        get {
-            return goods;
-        }
+        get => goods;
     }
     [SerializeField] bool isSource;
+    private bool isFullfilled;
+    public bool IsFullfilled {
+        get => isFullfilled;
+        set {
+            isFullfilled = value;
+                
+            if (isFullfilled)
+                Game.LevelHandler.Fullfilled(this);
+            else
+                Game.LevelHandler.Unfullfilled(this);
+
+            UpdateFullfillmentVisuals(isFullfilled);
+        }
+    }
+
+    private void UpdateFullfillmentVisuals(bool fullfillment)
+    {
+        groundBlend.enabled = (Game.Settings.displaySimplyfiedUI && !isSource && !fullfillment);
+    }
 
     private void Start()
     {
         transform.rotation = Quaternion.Euler(0, Random.Range(0,360), 0);
 
-        if (meshRenderer != null && !goods.IsNull)
+        if (!goods.IsNull)
         {
-            Debug.Log("enable visuals for " + name);
-            meshRenderer.enabled = true;
-            meshRenderer.material = new Material(meshRenderer.material);
-            meshRenderer.material.color = goods.Data.color;
+            if (meshRenderer != null && Game.Settings.displaySimplyfiedUI)
+            {
+                Debug.Log("enable visuals for " + name);
+                meshRenderer.enabled = true;
+                meshRenderer.material = new Material(meshRenderer.material);
+                meshRenderer.material.color = goods.Data.color;
+            }
 
             if (!isSource)
             {
-                groundBlend.enabled = true;
-                Game.LevelHandler.Unfullfilled(this);
+                IsFullfilled = false;
             }
         }
     }
@@ -58,7 +77,7 @@ public class City : MonoBehaviour, IClickable
         if (!isSource && train.Goods.name == Goods.name)
         {
             Debug.Log("so it's a match!");
-            Game.LevelHandler.Fullfilled(this);
+            IsFullfilled = true;
         }
     }
 

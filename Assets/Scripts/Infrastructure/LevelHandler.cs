@@ -28,13 +28,19 @@ public class LevelHandler : Singleton<LevelHandler>
 
     internal void Unfullfilled(City city)
     {
-        if (!(fullfilled.Contains(city) || unfullfilled.Contains(city)))
+        if (!unfullfilled.Contains(city))
+        {
             unfullfilled.Add(city);
+            if (fullfilled.Contains(city))
+                fullfilled.Remove(city);
+        }
     }
 
     internal void ResetProgression()
     {
-        unfullfilled.AddRange(fullfilled);
-        fullfilled.Clear();
+        for (int i = fullfilled.Count - 1; i >= 0; i--)
+        {
+            fullfilled[i].IsFullfilled = false;
+        }
     }
 }

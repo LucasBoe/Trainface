@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Passengers
   m_EditorClassIdentifier: 
   color: {r: 0, g: 0.4436121, b: 1, a: 1}
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 2b647ae800f074cd2afddc997c5065ef, type: 3}
