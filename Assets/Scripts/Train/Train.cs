@@ -8,11 +8,16 @@ public class Train : MonoBehaviour
     [SerializeField] float trainSpeed = 10;
 
     Line line;
-    Goods goods;
+    private Goods goods;
+    public Goods Goods {
+        get {
+            return goods;
+        }
+    }
     Color color;
     City lastPassed;
 
-    float position = 0; //0 - 1
+    private float position = 0; //0 - 1
     public float Position
     {
         get
@@ -56,7 +61,6 @@ public class Train : MonoBehaviour
     private void TryPass(City passed) {
         if (lastPassed != passed)
         {
-            Debug.LogWarning("passed " + passed.name + " at " + position);
             lastPassed = passed;
             passed.Pass(this);
         }

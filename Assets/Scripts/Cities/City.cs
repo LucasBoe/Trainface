@@ -25,7 +25,10 @@ public class City : MonoBehaviour, IClickable
             meshRenderer.material.color = goods.Data.color;
 
             if (!isSource)
+            {
                 groundBlend.enabled = true;
+                Game.LevelHandler.Unfullfilled(this);
+            }
         }
     }
 
@@ -50,7 +53,13 @@ public class City : MonoBehaviour, IClickable
 
     internal void Pass(Train train)
     {
-        //
+        Debug.Log(train.name + " passed " + name + " with " + train.Goods.name + " and they " + (isSource?"produce ":"need ") + Goods.name);
+
+        if (!isSource && train.Goods.name == Goods.name)
+        {
+            Debug.Log("so it's a match!");
+            Game.LevelHandler.Fullfilled(this);
+        }
     }
 
     public void EndDrag()

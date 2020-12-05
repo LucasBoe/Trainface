@@ -50,6 +50,12 @@ public class Game : MonoBehaviour
         }
     }
 
+    public static LevelHandler LevelHandler {
+        get {
+            return LevelHandler.GetInstance();
+        }
+    }
+
     public static Game GetInstance () {
         return Instance;
     }

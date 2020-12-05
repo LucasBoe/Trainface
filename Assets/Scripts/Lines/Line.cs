@@ -39,6 +39,7 @@ public class Line
     public void AddCity (City city) {
         cities.Add(city);
         UpdateLength();
+        Game.LevelHandler.ResetProgression();
     }
 
     private void UpdateLength()
