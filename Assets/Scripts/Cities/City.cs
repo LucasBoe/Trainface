@@ -48,6 +48,11 @@ public class City : MonoBehaviour, IClickable
         Game.CityConnectionHandler.TryStartConnectionAt(this);
     }
 
+    internal void Pass(Train train)
+    {
+        //
+    }
+
     public void EndDrag()
     {
         Debug.Log("end drag");

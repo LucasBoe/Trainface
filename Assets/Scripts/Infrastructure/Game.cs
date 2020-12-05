@@ -38,6 +38,12 @@ public class Game : MonoBehaviour
         }
     }
 
+    public static TrainHandler TrainHandler {
+        get {
+            return TrainHandler.GetInstance(usePrefab: true);
+        }
+    }
+
     public static GoodsDataHandler GoodsHandler {
         get {
             return GoodsDataHandler.GetInstance();
