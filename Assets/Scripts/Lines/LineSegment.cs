@@ -6,6 +6,11 @@ public struct LineSegment
     public Vector2 first;
     public Vector2 second;
 
+    public float Length
+    {
+        get => Vector2.Distance(first, second);
+    }
+
     public LineSegment(Vector2 first, Vector2 second)
     {
         this.first = first;

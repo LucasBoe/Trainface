@@ -35,10 +35,10 @@ public class LineVisualizer : MonoBehaviour
             //line
             UpdateLinePositions();
 
-            dotPosition = line.Train.Position;
+            dotPosition = (Mathf.Sin(Time.time * dotSpeed / line.Length) + 1) / 2; ;
 
             //dot
-            UpdateDot();
+            //UpdateDot();
 
         }
         else
@@ -60,10 +60,10 @@ public class LineVisualizer : MonoBehaviour
                     float pos = (posTarget - d) / distanceToAdd;
                     dotRenderer.transform.position = before.transform.position * (1-pos) + current.transform.position * pos;
 
-                    if (pos < 0.01)
-                        line.Train.CheckPassTEMP(before);
-                    else if (pos > 0.99f)
-                        line.Train.CheckPassTEMP(current);
+                    //if (pos < 0.01)
+                    //    line.Train.CheckPassTEMP(before);
+                    //else if (pos > 0.99f)
+                    //    line.Train.CheckPassTEMP(current);
 
                     return;
                 } else {

@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Train : MonoBehaviour
+public class Train : RailObject
 {
     [SerializeField] float trainSpeed = 10;
 
@@ -15,7 +15,7 @@ public class Train : MonoBehaviour
         }
     }
     Color color;
-    City lastPassed;
+    Trackpoint lastPassed;
 
     private float position = 0; //0 - 1
     public float Position
@@ -38,36 +38,15 @@ public class Train : MonoBehaviour
         this.goods = goods;
         this.color = color;
 
+        Rail(line);
         StartDriving();
     }
 
-    public void StartDriving() {
-
-        if (driving == null)
-            driving = StartCoroutine(DrivingRoutine());
-    }
-
-    public void StopDriving () {
-        Destroy(gameObject);
-    }
-
-    IEnumerator DrivingRoutine() {
-        while (line != null) {
-            position = (Mathf.Sin(Time.time * trainSpeed / line.Length) + 1) / 2;
-            yield return null;
-        }
-    }
-
-    private void TryPass(City passed) {
+    protected override void TryPass(Trackpoint passed) {
         if (lastPassed != passed)
         {
             lastPassed = passed;
             passed.Pass(this);
         }
-    }
-
-    internal void CheckPassTEMP(City passing)
-    {
-        TryPass(passing);
     }
 }

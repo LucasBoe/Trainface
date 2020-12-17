@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Line
@@ -15,6 +16,18 @@ public class Line
     public Color Color {
         get {
             return color;
+        }
+    }
+
+    private Rails rails;
+    public Rails Rails
+    {
+        get
+        {
+            if (rails == null)
+                rails = Game.LineHandler.CreateRailsFor(this);
+
+            return rails;
         }
     }
 
@@ -37,8 +50,12 @@ public class Line
     }
 
     public void AddCity (City city) {
+        if (Rails != null)
+            Debug.Log("Rails found");
+
         cities.Add(city);
         UpdateLength();
+        Train.Rail(this);
         Game.LevelHandler.ResetProgression();
     }
 
@@ -75,7 +92,39 @@ public class Line
         return cities.ToArray();
     }
 
-    public LineSegment [] GetLineSegments () {
+    public Trackpoint[] GetTrackpoints()
+    {
+        List<Trackpoint> trackpoints = new List<Trackpoint>();
+
+        Trackpoint before = null;
+
+        for (int i = 0; i < cities.Count; i++)
+        {
+            Trackpoint trackpoint = null;
+
+            if (before != null)
+            {
+                Quaternion rotation = Quaternion.LookRotation(cities[i].transform.position - before.GetLocation());
+                trackpoint = new Trackpoint(cities[i], before, rotation.eulerAngles.y, this);
+                before.ConnectNext(trackpoint);
+            } else
+            {
+                Quaternion rotation = Quaternion.LookRotation(cities[i].transform.position - cities[i + 1].transform.position);
+                trackpoint = new Trackpoint(cities[i], null, rotation.eulerAngles.y, this);
+            }
+
+            if (trackpoint != null)
+            {
+                before = trackpoint;
+                trackpoints.Add(trackpoint);
+            }
+        }
+
+        return trackpoints.ToArray();
+    }
+
+    public LineSegment [] GetLineSegments ()
+    {
         List<LineSegment> segments = new List<LineSegment>();
 
         City before = null;

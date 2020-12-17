@@ -6,6 +6,7 @@ using UnityEngine;
 public class LineHandler : Singleton<LineHandler>
 {
     [SerializeField] LineVisualizer visualizerPrefab;
+    [SerializeField] Rails RailsPrefab;
 
     List<Line> lines = new List<Line>();
 
@@ -27,6 +28,13 @@ public class LineHandler : Singleton<LineHandler>
         }
 
         return false;
+    }
+
+    public Rails CreateRailsFor(Line line)
+    {
+        Rails rails = Instantiate(RailsPrefab);
+        rails.Init(line);
+        return rails;
     }
 
     public bool DoesLineSegmentIntersectsWithAnyLine(LineSegment newSegment) {
