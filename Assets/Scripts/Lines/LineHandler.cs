@@ -22,10 +22,10 @@ public class LineHandler : Singleton<LineHandler>
     }
 
 
-    public bool CityIsPartOfLine(City city) {
+    public bool CityIsPartOfAnyLine(ITrackpointCreator tpc) {
         foreach (var line in lines)
         {
-            if (line.Contains(city))
+            if (line.Contains(tpc))
                 return true;
         }
 

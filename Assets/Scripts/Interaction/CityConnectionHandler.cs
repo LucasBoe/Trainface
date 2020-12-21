@@ -27,7 +27,7 @@ public class CityConnectionHandler : Singleton<CityConnectionHandler>
 
         Trackpoint[] trackpoints = line.GetTrackpoints();
         LineSegment lineSegment = new LineSegment(trackpoints[trackpoints.Length - 1].GetLocation2D(), Game.PlayerInteraction.hitPosition.To2D());
-        if (!Game.LineHandler.DoesLineSegmentIntersectsWithAnyLine(lineSegment))
+        if (!Game.LineHandler.DoesLineSegmentIntersectsWithAnyLine(lineSegment) && !Game.LineHandler.CityIsPartOfAnyLine(city))
             line.Add(city);
 
         line = null;

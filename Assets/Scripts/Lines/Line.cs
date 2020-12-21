@@ -103,9 +103,9 @@ public class Line
 
     public bool Contains (ITrackpointCreator tpc) {
 
-        foreach (Trackpoint tp in tpc.CreateTrackpoints())
+        foreach (Trackpoint tp in trackpoints)
         {
-            if (trackpoints.Contains(tp))
+            if (tp.GetCreator() == tpc)
                 return true;
         }
 
