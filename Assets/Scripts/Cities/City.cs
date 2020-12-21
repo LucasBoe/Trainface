@@ -2,14 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class City : MonoBehaviour, IClickable
+public class City : MonoBehaviour, IClickable, ITrackpointCreator
 {
     [SerializeField] MeshRenderer meshRenderer, groundBlend;
     [SerializeField] Goods goods;
-    public Goods Goods {
-        get => goods;
-    }
+
     [SerializeField] bool isSource;
+
     private bool isFullfilled;
     public bool IsFullfilled {
         get => isFullfilled;
@@ -23,11 +22,6 @@ public class City : MonoBehaviour, IClickable
 
             UpdateFullfillmentVisuals(isFullfilled);
         }
-    }
-
-    private void UpdateFullfillmentVisuals(bool fullfillment)
-    {
-        groundBlend.enabled = (Game.Settings.displaySimplyfiedUI && !isSource && !fullfillment);
     }
 
     private void Start()
@@ -51,6 +45,11 @@ public class City : MonoBehaviour, IClickable
         }
     }
 
+    public bool Produces()
+    {
+        return isSource;
+    }
+
     public virtual bool Produces (string goodsName = "") {
         return isSource && (goodsName == "" || goodsName == goods.name);
     }
@@ -60,32 +59,26 @@ public class City : MonoBehaviour, IClickable
         return !isSource && (goodsName == "" || goodsName == goods.name);
     }
 
+    private void UpdateFullfillmentVisuals(bool fullfillment)
+    {
+        groundBlend.enabled = (Game.Settings.displaySimplyfiedUI && !isSource && !fullfillment);
+    }
+
     /// <summary>
     /// Interaction
     /// </summary>
 
-    public void StartDrag()
+    public void Pass(Train train)
     {
-        Debug.Log("start drag");
-        Game.CityConnectionHandler.TryStartConnectionAt(this);
-    }
+        Debug.Log(train.name + " passed " + name + " with " + train.Goods.name + " and they " + (isSource?"produce ":"need ") + goods.name);
 
-    internal void Pass(Train train)
-    {
-        Debug.Log(train.name + " passed " + name + " with " + train.Goods.name + " and they " + (isSource?"produce ":"need ") + Goods.name);
-
-        if (!isSource && train.Goods.name == Goods.name)
+        if (!isSource && train.Goods.name == goods.name)
         {
             Debug.Log("so it's a match!");
             IsFullfilled = true;
         }
     }
 
-    public void EndDrag()
-    {
-        Debug.Log("end drag");
-        Game.CityConnectionHandler.TryEndConnectionAt(this);
-    }
 
     public void StartHover()
     {
@@ -102,8 +95,32 @@ public class City : MonoBehaviour, IClickable
         transform.localScale = Vector3.one;
     }
 
+    /// <summary>
+    /// Get-Methods
+    /// </summary>
+
     public string GetName()
     {
         return name;
+    }
+
+    public Trackpoint[] CreateTrackpoints()
+    {
+        return new Trackpoint[] { new Trackpoint(this) };
+    }
+
+    public Color GetColor()
+    {
+        return goods.Data.color;
+    }
+
+    public Goods GetGoods()
+    {
+        return goods;
+    }
+
+    public Vector3 GetLocation()
+    {
+        return transform.position;
     }
 }

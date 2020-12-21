@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Line
 {
-    List<City> cities = new List<City>();
+    List<Trackpoint> trackpoints = new List<Trackpoint>();
     float length;
     public float Length {
         get {
@@ -41,85 +41,79 @@ public class Line
         }
     }
 
+    public Goods Goods { get; internal set; }
+
     public System.Action<float> OnChangeLength;
 
     //constructor
-    public Line (City startingCity) {
-        cities.Add(startingCity);
-        color = startingCity.Goods.Data.color;
+    public Line (ITrackpointCreator startingTPC) {
+        Debug.Log("create new line from trackpoint creator");
+        trackpoints.AddRange(startingTPC.CreateTrackpoints());
+        Goods = startingTPC.GetGoods();
+        color = startingTPC.GetColor();
     }
 
-    public void AddCity (City city) {
+    public void Add (ITrackpointCreator newTPC) {
         if (Rails != null)
             Debug.Log("Rails found");
 
-        cities.Add(city);
+        Debug.Log("add new trackpoints from trackpoint creator");
+
+        trackpoints.AddRange(newTPC.CreateTrackpoints());
+        UpdateConnections();
         UpdateLength();
         Train.Rail(this);
         Game.LevelHandler.ResetProgression();
+    }
+
+    private void UpdateConnections()
+    {
+        foreach (Trackpoint tp in trackpoints)
+            tp.Line = this;
+        
     }
 
     private void UpdateLength()
     {
         length = 0;
 
-        City before = null;
+        Trackpoint before = null;
 
-        foreach (var current in cities)
+        foreach (var current in trackpoints)
         {
             if (before != null)
-                length += Vector3.Distance(before.transform.position, current.transform.position);
+                length += Vector3.Distance(before.GetLocation(), current.GetLocation());
 
             before = current;
         }
         OnChangeLength?.Invoke(length);
     }
 
-    public bool CityIsLast(City city)
+    public bool TPCIsLast(ITrackpointCreator tpc)
     {
         //city is first or last of a line
-        if (cities.Count > 0 && cities[cities.Count - 1] == city)
-            return true;
+        if (trackpoints.Count > 0)
+        {
+            if (trackpoints[trackpoints.Count - 1].GetCreator() == tpc)
+                return true;
+        }
 
         return false;
     }
 
-    public bool Contains (City city) {
-        return cities.Contains(city);
-    }
+    public bool Contains (ITrackpointCreator tpc) {
 
-    public City[] GetCities () {
-        return cities.ToArray();
+        foreach (Trackpoint tp in tpc.CreateTrackpoints())
+        {
+            if (trackpoints.Contains(tp))
+                return true;
+        }
+
+        return false;
     }
 
     public Trackpoint[] GetTrackpoints()
     {
-        List<Trackpoint> trackpoints = new List<Trackpoint>();
-
-        Trackpoint before = null;
-
-        for (int i = 0; i < cities.Count; i++)
-        {
-            Trackpoint trackpoint = null;
-
-            if (before != null)
-            {
-                Quaternion rotation = Quaternion.LookRotation(cities[i].transform.position - before.GetLocation());
-                trackpoint = new Trackpoint(cities[i], before, rotation.eulerAngles.y, this);
-                before.ConnectNext(trackpoint);
-            } else
-            {
-                Quaternion rotation = Quaternion.LookRotation(cities[i].transform.position - cities[i + 1].transform.position);
-                trackpoint = new Trackpoint(cities[i], null, rotation.eulerAngles.y, this);
-            }
-
-            if (trackpoint != null)
-            {
-                before = trackpoint;
-                trackpoints.Add(trackpoint);
-            }
-        }
-
         return trackpoints.ToArray();
     }
 
@@ -127,15 +121,39 @@ public class Line
     {
         List<LineSegment> segments = new List<LineSegment>();
 
-        City before = null;
-        foreach (City current in cities)
+        Trackpoint before = null;
+        foreach (Trackpoint current in trackpoints)
         {
             if (before != null)
-                segments.Add(new LineSegment(before.transform.position.To2D(), current.transform.position.To2D()));
+                segments.Add(new LineSegment(before.GetLocation2D(), current.GetLocation2D()));
 
             before = current;
         }
 
         return segments.ToArray();
+    }
+
+    public Trackpoint GetNextTrackpoint(Trackpoint trackpoint, bool directionIsForward)
+    {
+        for (int i = 0; i < trackpoints.Count; i++)
+        {
+            if (trackpoint == trackpoints[i])
+            {
+                if (directionIsForward && (i + 1) < trackpoints.Count)
+                {
+                    return trackpoints[i + 1];
+                }
+                if (!directionIsForward && i > 0)
+                {
+                    return trackpoints[i - 1];
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+
+        return null;
     }
 }

@@ -72,6 +72,7 @@ public class RailObject : MonoBehaviour
             {
                 directionIsForward = !directionIsForward;
                 AdaptTrackpointOrientation();
+                yield return null;
             }
         }
 
@@ -81,11 +82,7 @@ public class RailObject : MonoBehaviour
     }
     private void AdaptTrackpointOrientation ()
     {
-        if (trackpoint.GetNext(directionIsForward) == null)
-        {
-            transform.localRotation = Quaternion.Euler(rotationOffset.x, trackpoint.GetOrientation() + rotationOffset.y, rotationOffset.z);
-        }
-        else
+        if (trackpoint.GetNext(directionIsForward) != null)
         {
             Vector3 tpCurrent = trackpoint.GetLocation();
             Vector3 tpNext = trackpoint.GetNext(directionIsForward).GetLocation();

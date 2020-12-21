@@ -10,15 +10,17 @@ public class LineHandler : Singleton<LineHandler>
 
     List<Line> lines = new List<Line>();
 
-    public Line PickUpLine(City city) {
+    public Line PickUpLine(ITrackpointCreator tpc)
+    {
         foreach (Line line in lines)
         {
-            if (line.CityIsLast(city))
+            if (line.TPCIsLast(tpc))
                 return line;
         }
 
         return null;
     }
+
 
     public bool CityIsPartOfLine(City city) {
         foreach (var line in lines)
@@ -55,9 +57,9 @@ public class LineHandler : Singleton<LineHandler>
         return false;
     }
 
-    internal Line CreateNewLine(City city)
+    internal Line CreateNewLine(ITrackpointCreator trackpointC)
     {
-        Line line = new Line(city);
+        Line line = new Line(trackpointC);
         lines.Add(line);
         Instantiate(visualizerPrefab).Display(line);
         return line;

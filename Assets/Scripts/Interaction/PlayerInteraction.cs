@@ -16,6 +16,7 @@ public class PlayerInteraction : Singleton<PlayerInteraction>
 
     private void Update()
     {
+        //did the hover change hover
         IClickable current = RaycastForClickable();
 
         if (current != before)
@@ -26,14 +27,19 @@ public class PlayerInteraction : Singleton<PlayerInteraction>
             if (current != null)
                 current.StartHover();
         }
-        else if (current != null)
+
+        if (current != null)
         {
+            //update hover
             current.UpdateHover();
 
+            //check for interaction with player
+            ITrackpointCreator tpc = current as ITrackpointCreator;
+
             if (Input.GetMouseButtonDown(0))
-                current.StartDrag();
+                Game.CityConnectionHandler.TryStartConnectionAt(tpc);
             if (Input.GetMouseButtonUp(0))
-                current.EndDrag();
+                Game.CityConnectionHandler.TryEndConnectionAt(tpc);
         } else {
             if (Input.GetMouseButtonUp(0))
                 Game.CityConnectionHandler.AbortPlacement();

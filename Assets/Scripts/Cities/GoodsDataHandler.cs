@@ -31,7 +31,7 @@ public class GoodsDataHandler : Singleton<GoodsDataHandler>
         if (Data.ContainsKey(name.ToLower()))
             return Data[name.ToLower()];
 
-        Debug.LogError("please crete data for " + name);
+        Debug.LogError("please create data for " + name);
         return null;
     }
 }

@@ -10,7 +10,7 @@ public class TrainHandler : Singleton<TrainHandler>
     public Train SpawnTrain(Line line)
     {
         Train newTrain = Instantiate(trainPrefab);
-        newTrain.Init(line, line.GetCities()[0].Goods,line.Color);
+        newTrain.Init(line, line.Goods,line.Color);
         return newTrain;
     }
 }

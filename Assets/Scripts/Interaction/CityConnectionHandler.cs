@@ -8,26 +8,27 @@ public class CityConnectionHandler : Singleton<CityConnectionHandler>
     [SerializeField] LineRenderer lineRenderer;
     Line line;
 
-    internal void TryStartConnectionAt(City city)
+    internal void TryStartConnectionAt(ITrackpointCreator trackpointC)
     {
-        Debug.Log("try start at city" + city.name);
+        Debug.Log("try start at city" + trackpointC.GetName());
 
         //pick up existing line
-        line = Game.LineHandler.PickUpLine(city);
+        line = Game.LineHandler.PickUpLine(trackpointC);
 
         //create new if city is producer
-        if (line == null && city.Produces())
-            line = Game.LineHandler.CreateNewLine(city);
+        if (line == null && trackpointC.Produces())
+            line = Game.LineHandler.CreateNewLine(trackpointC);
     }
 
-    internal void TryEndConnectionAt(City city)
+    internal void TryEndConnectionAt(ITrackpointCreator city)
     {
         if (line == null)
             return;
 
-        LineSegment lineSegment = new LineSegment(line.GetCities()[line.GetCities().Length - 1].transform.position.To2D(), Game.PlayerInteraction.hitPosition.To2D());
+        Trackpoint[] trackpoints = line.GetTrackpoints();
+        LineSegment lineSegment = new LineSegment(trackpoints[trackpoints.Length - 1].GetLocation2D(), Game.PlayerInteraction.hitPosition.To2D());
         if (!Game.LineHandler.DoesLineSegmentIntersectsWithAnyLine(lineSegment))
-            line.AddCity(city);
+            line.Add(city);
 
         line = null;
     }
@@ -36,8 +37,8 @@ public class CityConnectionHandler : Singleton<CityConnectionHandler>
     {
         if (line != null)
         {
-            City[] cities = line.GetCities();
-            LineSegment segment = new LineSegment(cities[cities.Length - 1].transform.position.To2D(), Game.PlayerInteraction.hitPosition.To2D());
+            Trackpoint[] trackpoints = line.GetTrackpoints();
+            LineSegment segment = new LineSegment(trackpoints[trackpoints.Length - 1].GetLocation2D(), Game.PlayerInteraction.hitPosition.To2D());
             Color c = Game.LineHandler.DoesLineSegmentIntersectsWithAnyLine(segment) ? Color.red : line.Color;
 
             lineRenderer.startColor = c;

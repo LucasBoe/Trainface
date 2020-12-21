@@ -47,18 +47,18 @@ public class LineVisualizer : MonoBehaviour
 
     private void UpdateDot()
     {
-        City before = null;
+        Trackpoint before = null;
         float d = 0;
         float posTarget = dotPosition * length;
 
-        foreach (City current in line.GetCities()) {
+        foreach (Trackpoint current in line.GetTrackpoints()) {
             if (before != null)
             {
-                float distanceToAdd = Vector3.Distance(before.transform.position, current.transform.position);
+                float distanceToAdd = Vector3.Distance(before.GetLocation(), current.GetLocation());
 
                 if (d < posTarget && (d + distanceToAdd) > posTarget) {
                     float pos = (posTarget - d) / distanceToAdd;
-                    dotRenderer.transform.position = before.transform.position * (1-pos) + current.transform.position * pos;
+                    dotRenderer.transform.position = before.GetLocation() * (1-pos) + current.GetLocation() * pos;
 
                     //if (pos < 0.01)
                     //    line.Train.CheckPassTEMP(before);
@@ -76,11 +76,11 @@ public class LineVisualizer : MonoBehaviour
 
     private void UpdateLinePositions()
     {
-        City[] cities = line.GetCities();
+        Trackpoint[] trackpoints = line.GetTrackpoints();
 
-        lineRenderer.positionCount = cities.Length;
-        for (int i = 0; i < cities.Length; i++)
-            lineRenderer.SetPosition(i, cities[i].transform.position + Vector3.up * 0.1f);
+        lineRenderer.positionCount = trackpoints.Length;
+        for (int i = 0; i < trackpoints.Length; i++)
+            lineRenderer.SetPosition(i, trackpoints[i].GetLocation() + Vector3.up * 0.1f);
     }
 
     private void OnDestroy()

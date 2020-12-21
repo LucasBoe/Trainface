@@ -44,3 +44,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   RailElementPrefab: {fileID: 4876849218682967546, guid: de664004795b6f74593c0cc795551f21, type: 3}
+  trackpoints: []
+  coloredMaterial: {fileID: 2100000, guid: 31f62b869cc72444ca201113a2fc0048, type: 2}

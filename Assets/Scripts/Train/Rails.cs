@@ -1,4 +1,5 @@
 ﻿using NaughtyAttributes;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,6 +8,7 @@ public class Rails : MonoBehaviour
 {
     [SerializeField] Transform RailElementPrefab;
     [SerializeField] List<Trackpoint> trackpoints = new List<Trackpoint>();
+    [SerializeField] Material coloredMaterial;
 
     Line line;
 
@@ -14,6 +16,12 @@ public class Rails : MonoBehaviour
     {
         this.line = line;
         line.OnChangeLength += UpdateTracks;
+
+        if (Game.Settings.coloredTracks)
+        {
+            coloredMaterial = new Material(coloredMaterial);
+            coloredMaterial.color = line.Color;
+        }
     }
 
     private void OnDestroy()
@@ -46,7 +54,10 @@ public class Rails : MonoBehaviour
                 Quaternion rotation = Quaternion.LookRotation((second - first).To3D());
                 for (int i = 0; i < length; i++)
                 {
-                    Instantiate(RailElementPrefab, Vector2.Lerp(first, second, (float)i / length).To3D(), rotation, transform);
+                    MeshRenderer meshRenderer = Instantiate(RailElementPrefab, Vector2.Lerp(first, second, (float)i / length).To3D(), rotation, transform).GetComponent<MeshRenderer>();
+                    Material[] materials = meshRenderer.materials;
+                    materials[1] = coloredMaterial;
+                    meshRenderer.materials = materials;
                 }
             }
 
@@ -65,20 +76,6 @@ public class Rails : MonoBehaviour
         //    }
         //}
 
-    }
-
-    private void CreateTrackpointsFromChilds()
-    {
-        Trackpoint before = null;
-
-        foreach (Transform t in transform)
-        {
-            Trackpoint newTrackpoint = new Trackpoint(t.position,before,t.rotation.eulerAngles.y, line);
-            before?.ConnectNext(newTrackpoint);
-            trackpoints.Add(newTrackpoint);
-            before = newTrackpoint;
-            Debug.Log("added new trackpoint");
-        }
     }
 
     public Trackpoint GetClosestTrackpoint(Vector3 position)
@@ -108,7 +105,7 @@ public class Rails : MonoBehaviour
 [System.Serializable]
 public class Trackpoint
 {
-    [SerializeField] City city;
+    [SerializeField] ITrackpointCreator origin;
     [SerializeField] Vector3 location;
     [SerializeField] Trackpoint before;
     [SerializeField] Trackpoint next;
@@ -117,27 +114,16 @@ public class Trackpoint
 
     public Line Line;
 
-    public Trackpoint(City _city, Trackpoint _before, float _orientation, Line line)
+    public Trackpoint(ITrackpointCreator origin)
     {
-        city = _city;
-        location = _city.transform.position;
-        before = _before;
-        orientation = _orientation;
-        Line = line;
-    }
-
-    public Trackpoint (Vector3 _location, Trackpoint _before, float _orientation, Line line)
-    {
-        location = _location;
-        before = _before;
-        orientation = _orientation;
-        Line = line;
+        this.origin = origin;
+        this.location = origin.GetLocation();
     }
 
     public void Pass(Train passed)
     {
-        if (city != null)
-            city.Pass(passed);
+        if (origin != null)
+            origin.Pass(passed);
     }
 
     public void ConnectNext(Trackpoint _next)
@@ -150,6 +136,11 @@ public class Trackpoint
         return location;
     }
 
+    public Vector2 GetLocation2D()
+    {
+        return location.To2D();
+    }
+
     public float GetOrientation()
     {
         return orientation;
@@ -157,7 +148,11 @@ public class Trackpoint
 
     public Trackpoint GetNext(bool directionIsForward)
     {
-        return directionIsForward?next:before;
+        return Line.GetNextTrackpoint(this, directionIsForward);
     }
 
+    public ITrackpointCreator GetCreator()
+    {
+        return origin;
+    }
 }

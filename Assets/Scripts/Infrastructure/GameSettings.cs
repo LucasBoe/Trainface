@@ -6,4 +6,5 @@ using UnityEngine;
 public class GameSettings : ScriptableObject
 {
     public bool displaySimplyfiedUI;
+    public bool coloredTracks;
 }
