@@ -19,8 +19,8 @@ public class Line
         }
     }
 
-    private Rails rails;
-    public Rails Rails
+    private OldRails rails;
+    public OldRails Rails
     {
         get
         {
@@ -31,8 +31,8 @@ public class Line
         }
     }
 
-    private Train train;
-    public Train Train {
+    private OldTrain train;
+    public OldTrain Train {
         get {
             if (train == null)
                 train = Game.TrainHandler.SpawnTrain(this);

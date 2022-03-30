@@ -3,7 +3,7 @@ using UnityEngine;
 
 public interface ITrackpointCreator
 {
-    void Pass(Train train);
+    void Pass(OldTrain train);
 
     bool Produces();
 

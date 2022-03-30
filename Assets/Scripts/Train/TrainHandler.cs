@@ -5,11 +5,11 @@ using UnityEngine;
 
 public class TrainHandler : Singleton<TrainHandler>
 {
-    [SerializeField] Train trainPrefab;
+    [SerializeField] OldTrain trainPrefab;
 
-    public Train SpawnTrain(Line line)
+    public OldTrain SpawnTrain(Line line)
     {
-        Train newTrain = Instantiate(trainPrefab);
+        OldTrain newTrain = Instantiate(trainPrefab);
         newTrain.Init(line, line.Goods,line.Color);
         return newTrain;
     }

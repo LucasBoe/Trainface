@@ -8,7 +8,8 @@ public class Game : MonoBehaviour
     private static Game instance;
     private static Game Instance
     {
-        get {
+        get
+        {
             if (instance == null)
                 instance = FindObjectOfType<Game>();
 
@@ -19,55 +20,76 @@ public class Game : MonoBehaviour
         }
     }
 
-    public static PlayerInteraction PlayerInteraction {
-        get {
-            return PlayerInteraction.GetInstance();
+    public static PlayerInteractionHandler PlayerInteraction
+    {
+        get
+        {
+            return PlayerInteractionHandler.GetInstance();
         }
     }
 
     public static CityConnectionHandler CityConnectionHandler
     {
-        get {
+        get
+        {
             return CityConnectionHandler.GetInstance(usePrefab: true);
         }
     }
 
     public static LineHandler LineHandler
     {
-        get {
+        get
+        {
             return LineHandler.GetInstance(usePrefab: true);
         }
     }
 
-    public static TrainHandler TrainHandler {
-        get {
+    public static TrainHandler TrainHandler
+    {
+        get
+        {
             return TrainHandler.GetInstance(usePrefab: true);
         }
     }
 
-    public static GoodsDataHandler GoodsHandler {
-        get {
+    public static GoodsDataHandler GoodsHandler
+    {
+        get
+        {
             return GoodsDataHandler.GetInstance();
         }
     }
 
-    public static LevelHandler LevelHandler {
-        get {
+    public static LevelHandler LevelHandler
+    {
+        get
+        {
             return LevelHandler.GetInstance();
         }
     }
 
-    public static Game GetInstance () {
+    public static Game GetInstance()
+    {
         return Instance;
     }
 
     private static GameSettings gameSettings;
-    public static GameSettings Settings {
-        get {
+    public static GameSettings Settings
+    {
+        get
+        {
             if (gameSettings == null)
                 gameSettings = LoadGameSettings();
 
             return gameSettings;
+        }
+    }
+
+    public static TileManager TileManager
+    {
+        get
+        {
+            return TileManager.GetInstance();
         }
     }
 

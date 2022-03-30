@@ -68,7 +68,7 @@ public class City : MonoBehaviour, IClickable, ITrackpointCreator
     /// Interaction
     /// </summary>
 
-    public void Pass(Train train)
+    public void Pass(OldTrain train)
     {
         Debug.Log(train.name + " passed " + name + " with " + train.Goods.name + " and they " + (isSource?"produce ":"need ") + goods.name);
 

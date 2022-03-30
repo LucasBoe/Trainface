@@ -6,7 +6,7 @@ using UnityEngine;
 public class LineHandler : Singleton<LineHandler>
 {
     [SerializeField] LineVisualizer visualizerPrefab;
-    [SerializeField] Rails RailsPrefab;
+    [SerializeField] OldRails RailsPrefab;
 
     List<Line> lines = new List<Line>();
 
@@ -32,9 +32,9 @@ public class LineHandler : Singleton<LineHandler>
         return false;
     }
 
-    public Rails CreateRailsFor(Line line)
+    public OldRails CreateRailsFor(Line line)
     {
-        Rails rails = Instantiate(RailsPrefab);
+        OldRails rails = Instantiate(RailsPrefab);
         rails.Init(line);
         return rails;
     }
