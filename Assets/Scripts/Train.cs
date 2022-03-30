@@ -6,23 +6,23 @@ using UnityEngine;
 
 public class Train : MonoBehaviour
 {
-    [SerializeField] Tile startTile;
     [SerializeField] Wagon engine;
     [SerializeField] Wagon[] wagons;
 
-    [SerializeField] List<SectionSwitch> sectionBuffer = new List<SectionSwitch>();
-    RailSection start;
+    [SerializeField] Tile startTile;
+    RailSection startSection;
+    SectionSwitch startSwitch;
 
-    private const int BUFFER_MAX_LENGTH = 2;
+    SectionSwitch latestSwitch;
 
     private void Start()
     {
-        start = startTile.Sections[0];
+        startSection = startTile.Sections[0];
 
-        engine.Init(start, this);
+        engine.Init(startSection, this);
 
         foreach (Wagon wagon in wagons)
-            wagon.Init(start, this);
+            wagon.Init(startSection, this);
     }
 
     internal SectionSwitch GetNextSection(Wagon wagon, SectionSwitch lastSectionSwitch)
@@ -31,20 +31,19 @@ public class Train : MonoBehaviour
         {
             SectionSwitch next = TileTravelHelper.GetNextSection(wagon.Section, wagon.Direction);
 
-            if (sectionBuffer.Count > BUFFER_MAX_LENGTH)
-                sectionBuffer.RemoveAt(0);
+            if (startSwitch == null) startSwitch = next;
 
-            if (sectionBuffer.Count > 0)
-                sectionBuffer.Last().NextSwitch = next;
+            if (latestSwitch != null)
+                latestSwitch.NextSwitch = next;
 
-            sectionBuffer.Add(next);
+            latestSwitch = next;
             return next;
         }
 
         if (lastSectionSwitch != null)
             return lastSectionSwitch.NextSwitch;
 
-        return sectionBuffer.First(); ;
+        return startSwitch;
     }
 
     private void Update()
