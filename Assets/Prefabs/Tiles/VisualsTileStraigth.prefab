@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 6475913806274382436}
   - component: {fileID: 6460585892849349520}
   - component: {fileID: 6449834924602337464}
-  - component: {fileID: 6428556376764243078}
   m_Layer: 0
   m_Name: VisualsTileStraigth
   m_TagString: Untagged
@@ -88,17 +87,3 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &6428556376764243078
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6473211677523386452}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 4300000, guid: 1a919dadbfdd34f839fb20cc6f9d8611, type: 3}

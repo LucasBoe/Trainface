@@ -5,36 +5,44 @@ using UnityEngine;
 
 public static class TileTravelHelper
 {
-    internal static TravelResult Travel(RailSection section, TrainDirection direction, float tilePosition)
+    internal static PositionRotationPair Travel(RailSection section, TrainDirection direction, float tilePosition)
     {
-        TravelResult result = new TravelResult();
-
-        if (tilePosition > 1f)
-        {
-            result.UpdateTilePosition = true;
-
-            tilePosition -= 1f;
-            result.NewSection = section.GetNext(direction);
-
-            if (result.NewSection == null || result.NewSection.IsReverse(section))
-                result.ChangeDirection = true;
-        }
-
+        PositionRotationPair result = new PositionRotationPair();
         result.Position = section.GetPosition(direction, tilePosition);
         result.Rotation = section.GetRotation(direction, tilePosition);
+        return result;
+    }
+
+    public static SectionSwitch GetNextSection(RailSection oldSection, TrainDirection direction)
+    {
+        SectionSwitch result = new SectionSwitch();
+
+        result.PreviousSection = oldSection;
+
+        RailSection next = oldSection.GetNext(direction);
+
+        if (next == null || next.IsReverse(oldSection))
+            result.Direction = direction.Inverse();
+        else
+            result.Direction = direction;
+
+        result.NewSection = next != null ? next : oldSection;
 
         return result;
     }
 }
 
-public class TravelResult
+public class PositionRotationPair
 {
     public Vector3 Position;
     public Quaternion Rotation;
+}
 
-    public bool ChangeDirection = false;
+[System.Serializable]
+public class SectionSwitch
+{
+    public RailSection PreviousSection = null;
+    public TrainDirection Direction;
     public RailSection NewSection = null;
-
-    public bool UpdateTilePosition = false;
-    public float NewTilePosition;
+    public SectionSwitch NextSwitch;
 }
